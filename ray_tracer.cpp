@@ -4,10 +4,23 @@
 
 RayTracer::RayTracer()
 {
-    Sphere* obj1 = new Sphere();
-    obj1->m_material.diffuse = glm::vec3(0.5f, 0.5f, 0.2f);
+    Sphere* obj1 = new Sphere(0.2f);
+    obj1->m_center = glm::vec3(0.0f, 0.0f, 0.3f);
+    obj1->m_material.diffuse = glm::vec3(0.9f, 0.5f, 0.2f);
+
+    Sphere* obj2 = new Sphere(0.1f);
+    obj2->m_center = glm::vec3(0.5f, 0.5f, 0.1f);
+    obj2->m_material.diffuse = glm::vec3(0.8f, 0.3f, 0.6f);
+    obj2->m_material.shininess = 64;
+
+    Sphere* obj3 = new Sphere(0.4f);
+    obj3->m_center = glm::vec3(-0.7f, -0.5f, 0.3f);
+    obj3->m_material.diffuse = glm::vec3(0.1f, 0.1f, 0.6f);
+    obj3->m_material.shininess = 256;
 
     m_objects.push_back(obj1);
+    m_objects.push_back(obj2);
+    m_objects.push_back(obj3);
 }
 
 RayTracer::~RayTracer()
@@ -17,10 +30,9 @@ RayTracer::~RayTracer()
     }
 }
 
-glm::ivec3 RayTracer::CastRay(const glm::vec2& worldPos)
+glm::ivec3 RayTracer::CastRay(const glm::vec3& worldPos)
 {
-    glm::vec3 rayDir = glm::normalize(glm::vec3(worldPos, 0.0f) - m_rayOrigin);
-    Ray ray { m_rayOrigin, rayDir };
+    Ray ray = camera.GetRay(worldPos);
 
     std::vector<Intersection> intersections;
 
@@ -38,21 +50,26 @@ glm::ivec3 RayTracer::CastRay(const glm::vec2& worldPos)
 
     glm::vec3 color { 0.0f };
 
-    BaseObject* obj = intersections[0].pObject;
-    float t = intersections[0].distance;
-    glm::vec3 point = m_rayOrigin + rayDir * t;
+    color += Lighting(intersections[0], ray);
 
-    glm::vec3 N = obj->GetSurfaceNormal(point);
-    glm::vec3 L = glm::normalize(point - m_lightPos);
-    glm::vec3 V = rayDir;
+    return glm::ivec3(glm::clamp(color, 0.0f, 1.0f) * 255.0f);
+}
+
+glm::vec3 RayTracer::Lighting(const Intersection& intersection, const Ray& ray)
+{
+    Material& material = intersection.pObject->m_material;
+
+    glm::vec3 color = material.ambient;
+
+    glm::vec3 N = intersection.normal;
+    glm::vec3 L = glm::normalize(m_lightPos - intersection.point);
     glm::vec3 R = glm::normalize(glm::reflect(-L, N));
 
     float diff = glm::max(glm::dot(N, L), 0.0f);
-    float spec = static_cast<float>(glm::pow(glm::max(glm::dot(V, R), 0.0f), obj->m_material.shininess));
+    float spec = glm::pow(glm::max(glm::dot(-ray.direction, R), 0.0f), material.shininess);
 
-    color += obj->m_material.ambient;
-    color += obj->m_material.diffuse * diff;
-    color += obj->m_material.specular * spec;
+    color += material.diffuse * diff;
+    color += material.specular * spec;
 
-    return glm::ivec3(glm::clamp(color, 0.0f, 1.0f) * 255.0f);
+    return color;
 }

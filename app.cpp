@@ -36,29 +36,30 @@ App::~App()
 
 void App::Run()
 {
-    std::cout << "Render Start\n";
-    uint64_t start = SDL_GetTicks64();
     Render();
-    std::cout << "Render End: " << (SDL_GetTicks64() - start) * 0.001 << " sec\n";
     HandleEvent();
 }
 
 void App::Render(void)
 {
+    std::cout << "Render Start\n";
+    uint64_t start = SDL_GetTicks64();
+
     for (uint32_t y = 0; y < m_height; y++) {
         for (uint32_t x = 0; x < m_width; x++) {
-            glm::vec2 worldPos = TransformScreenToWorld({ x, y });
-
+            glm::vec3 worldPos = TransformScreenToWorld({ x, y });
             WritePixel(x, y, p_rayTracer->CastRay(worldPos));
         }
     }
 
+    std::cout << "Render End: " << (SDL_GetTicks64() - start) * 0.001 << " sec\n";
     SDL_UpdateWindowSurface(m_window);
 }
 
 void App::HandleEvent(void)
 {
     std::cout << "\nPress ESC to exit.\n";
+    std::cout << "Press C to capture image to BMP.\n";
 
     SDL_Event event;
     while (1) {
@@ -72,6 +73,11 @@ void App::HandleEvent(void)
             if (keyboardState[SDL_SCANCODE_ESCAPE]) {
                 return;
             }
+
+            if (keyboardState[SDL_SCANCODE_C]) {
+                CaptureImageToBMP();
+                return;
+            }
         }
     }
 }
@@ -83,11 +89,22 @@ void App::WritePixel(uint32_t x, uint32_t y, const glm::ivec3& color)
     pixels[index] = SDL_MapRGB(m_format, color.r, color.g, color.b);
 }
 
-glm::vec2 App::TransformScreenToWorld(const glm::vec2& screenPos)
+glm::vec3 App::TransformScreenToWorld(const glm::vec2& screenPos)
 {
-    float worldX = 2.0f * screenPos.x / (m_width - 1) - 1.0f;
+    float worldX = 2.0f * screenPos.x / m_width - 1.0f;
     worldX *= m_aspect;
-    float worldY = 1.0f - 2.0f * screenPos.y / (m_height - 1);
+    float worldY = 1.0f - 2.0f * screenPos.y / m_height;
 
-    return glm::vec2(worldX, worldY);
+    return glm::vec3(worldX, worldY, 0.0f);
+}
+
+void App::CaptureImageToBMP(void)
+{
+    std::string filename = "screenshot.bmp";
+
+    if (SDL_SaveBMP(SDL_GetWindowSurface(m_window), filename.c_str()) == 0) {
+        std::cout << filename << " created\n";
+    } else {
+        std::cout << "Failed to save image: " << SDL_GetError() << '\n';
+    }
 }

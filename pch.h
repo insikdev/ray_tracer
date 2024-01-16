@@ -6,6 +6,7 @@
 
 // glm
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // C++
 #include <string>
@@ -23,6 +24,8 @@ struct Ray {
 
 struct Intersection {
     float distance;
+    glm::vec3 point;
+    glm::vec3 normal;
     BaseObject* pObject;
 };
 

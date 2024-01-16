@@ -14,7 +14,8 @@ private:
     void Render(void);
     void HandleEvent(void);
     void WritePixel(uint32_t x, uint32_t y, const glm::ivec3& color);
-    glm::vec2 TransformScreenToWorld(const glm::vec2& screenPos);
+    glm::vec3 TransformScreenToWorld(const glm::vec2& screenPos);
+    void CaptureImageToBMP(void);
 
 private:
     RayTracer* p_rayTracer;
@@ -26,5 +27,4 @@ private:
     SDL_Window* m_window;
     SDL_PixelFormat* m_format;
     void* m_pixels;
-    float m_pixelSize { 2.0f };
 };
