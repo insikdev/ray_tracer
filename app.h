@@ -13,7 +13,7 @@ public:
 private:
     void Render(void);
     void HandleEvent(void);
-    void WritePixel(uint32_t x, uint32_t y, const glm::vec3& color);
+    void WritePixel(uint32_t x, uint32_t y, const glm::ivec3& color);
     glm::vec2 TransformScreenToWorld(const glm::vec2& screenPos);
 
 private:

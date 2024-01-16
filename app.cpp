@@ -76,11 +76,11 @@ void App::HandleEvent(void)
     }
 }
 
-void App::WritePixel(uint32_t x, uint32_t y, const glm::vec3& color)
+void App::WritePixel(uint32_t x, uint32_t y, const glm::ivec3& color)
 {
     uint32_t index = x + y * m_width;
     uint32_t* pixels = static_cast<uint32_t*>(m_pixels);
-    pixels[index] = SDL_MapRGB(m_format, static_cast<uint8_t>(color.r * 255), static_cast<uint8_t>(color.g * 255), static_cast<uint8_t>(color.b * 255));
+    pixels[index] = SDL_MapRGB(m_format, color.r, color.g, color.b);
 }
 
 glm::vec2 App::TransformScreenToWorld(const glm::vec2& screenPos)

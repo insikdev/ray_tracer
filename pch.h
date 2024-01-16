@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 class BaseObject;
 
@@ -21,6 +22,13 @@ struct Ray {
 };
 
 struct Intersection {
-    float distatnce;
+    float distance;
     BaseObject* pObject;
+};
+
+struct Material {
+    glm::vec3 ambient { 0.1f };
+    glm::vec3 diffuse { 0.9f };
+    glm::vec3 specular { 0.9f };
+    uint32_t shininess { 16 };
 };

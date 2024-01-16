@@ -15,8 +15,17 @@ bool Sphere::Intersect(const Ray& ray, std::vector<Intersection>& intersections)
     float t0 = -b + glm::sqrt(det);
     float t1 = -b - glm::sqrt(det);
 
-    intersections.push_back({ t0, this });
-    intersections.push_back({ t1, this });
+    float t = glm::min(t0, t1);
+    if (t < 0.0f) {
+        t = glm::max(t0, t1);
+    }
+
+    intersections.push_back({ t, this });
 
     return true;
+}
+
+glm::vec3 Sphere::GetSurfaceNormal(const glm::vec3& point)
+{
+    return glm::normalize(point - m_center);
 }
