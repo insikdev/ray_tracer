@@ -32,7 +32,7 @@ void App::Render(void)
     for (uint32_t y = 0; y < p_screen->GetHeight(); y++) {
         for (uint32_t x = 0; x < p_screen->GetWidth(); x++) {
             Ray ray = p_camera->GetRay({ x, y });
-            p_screen->WritePixel(x, y, p_rayTracer->TraceRay(ray));
+            p_screen->WritePixel(x, y, p_rayTracer->TraceRay(ray, 5));
         }
     }
 

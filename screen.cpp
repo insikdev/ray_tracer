@@ -32,9 +32,11 @@ Screen::~Screen()
 
 void Screen::WritePixel(uint32_t x, uint32_t y, const glm::vec3& color)
 {
+    glm::vec3 c { glm::clamp(color, 0.0f, 1.0f) };
+
     uint32_t index = x + y * m_width;
     uint32_t* pixels = static_cast<uint32_t*>(m_pixels);
-    pixels[index] = SDL_MapRGB(m_format, color.r, color.g, color.b);
+    pixels[index] = SDL_MapRGB(m_format, static_cast<int>(c.r * 255.0f), static_cast<int>(c.g * 255.0f), static_cast<int>(c.b * 255.0f));
 }
 
 void Screen::UpdateSurface(void)

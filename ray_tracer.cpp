@@ -55,8 +55,12 @@ RayTracer::~RayTracer()
     }
 }
 
-glm::ivec3 RayTracer::TraceRay(const Ray& ray)
+glm::vec3 RayTracer::TraceRay(const Ray& ray, uint8_t level)
 {
+    if (level == 0) {
+        return glm::vec3 { 0.0f };
+    }
+
     Intersection nearest;
 
     if (!TryFindNearestObject(ray, &nearest)) {
@@ -70,20 +74,17 @@ glm::ivec3 RayTracer::TraceRay(const Ray& ray)
     if (TryFindFirstObject(shadowRay, &shadow)) {
         float d = glm::length(m_lightPos - shadow.point);
         if (shadow.distance < d) {
-            glm::vec3 color = shadow.pObject->m_material.ambient;
-            return ClampColor(color);
+            return shadow.pObject->m_material.ambient;
         }
     }
 
     glm::vec3 color = Lighting(nearest);
-    return ClampColor(color);
+    return color;
 }
 
 glm::vec3 RayTracer::Lighting(const Intersection& intersection)
 {
     Material& material = intersection.pObject->m_material;
-
-    glm::vec3 color = material.ambient;
 
     glm::vec3 N = intersection.normal;
     glm::vec3 L = glm::normalize(m_lightPos - intersection.point);
@@ -92,10 +93,7 @@ glm::vec3 RayTracer::Lighting(const Intersection& intersection)
     float diff = glm::max(glm::dot(N, L), 0.0f);
     float spec = glm::pow(glm::max(glm::dot(intersection.toEye, R), 0.0f), material.shininess);
 
-    color += material.diffuse * diff;
-    color += material.specular * spec;
-
-    return color;
+    return material.ambient + material.diffuse * diff + material.specular * spec;
 }
 
 bool RayTracer::TryFindFirstObject(const Ray& ray, Intersection* out)
@@ -131,9 +129,4 @@ bool RayTracer::TryFindNearestObject(const Ray& ray, Intersection* out)
     *out = intersections[0];
 
     return true;
-}
-
-glm::ivec3 RayTracer::ClampColor(const glm::vec3& color)
-{
-    return glm::ivec3(glm::clamp(color, 0.0f, 1.0f) * 255.0f);
 }
