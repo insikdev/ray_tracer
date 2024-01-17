@@ -136,6 +136,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ray_tracer.cpp" />
+    <ClCompile Include="screen.cpp" />
     <ClCompile Include="sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ray_tracer.h" />
+    <ClInclude Include="screen.h" />
     <ClInclude Include="sphere.h" />
   </ItemGroup>
   <ItemGroup>

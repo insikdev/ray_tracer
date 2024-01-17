@@ -26,6 +26,7 @@ struct Intersection {
     float distance;
     glm::vec3 point;
     glm::vec3 normal;
+    glm::vec3 toEye;
     BaseObject* pObject;
 };
 

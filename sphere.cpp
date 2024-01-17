@@ -20,7 +20,7 @@ bool Sphere::Intersect(const Ray& ray, std::vector<Intersection>& intersections)
     float t0 = -b + glm::sqrt(det);
     float t1 = -b - glm::sqrt(det);
 
-    if (t0 < 0.0f && t1 < 0.0f) {
+    if (t0 < 0.0f && t1 < 0.0f) { // sphere is behind the ray.
         return false;
     }
 
@@ -31,7 +31,14 @@ bool Sphere::Intersect(const Ray& ray, std::vector<Intersection>& intersections)
 
     glm::vec3 point = ray.origin + ray.direction * t;
     glm::vec3 normal = glm::normalize(point - m_center);
-    intersections.push_back({ t, point, normal, this });
+    glm::vec3 toEye = -ray.direction;
+
+    if (glm::dot(toEye, normal) < 0) {
+        std::cout << "invert\n";
+        normal = -normal;
+    }
+
+    intersections.push_back({ t, point, normal, toEye, this });
 
     return true;
 }

@@ -4,7 +4,7 @@
 
 RayTracer::RayTracer()
 {
-    Sphere* obj1 = new Sphere(0.2f);
+    Sphere* obj1 = new Sphere(0.4);
     obj1->m_center = glm::vec3(0.0f, 0.0f, 0.3f);
     obj1->m_material.diffuse = glm::vec3(0.9f, 0.5f, 0.2f);
 
@@ -30,10 +30,8 @@ RayTracer::~RayTracer()
     }
 }
 
-glm::ivec3 RayTracer::CastRay(const glm::vec3& worldPos)
+glm::ivec3 RayTracer::TraceRay(const Ray& ray)
 {
-    Ray ray = camera.GetRay(worldPos);
-
     std::vector<Intersection> intersections;
 
     for (BaseObject* obj : m_objects) {
@@ -50,12 +48,12 @@ glm::ivec3 RayTracer::CastRay(const glm::vec3& worldPos)
 
     glm::vec3 color { 0.0f };
 
-    color += Lighting(intersections[0], ray);
+    color += Lighting(intersections[0]);
 
     return glm::ivec3(glm::clamp(color, 0.0f, 1.0f) * 255.0f);
 }
 
-glm::vec3 RayTracer::Lighting(const Intersection& intersection, const Ray& ray)
+glm::vec3 RayTracer::Lighting(const Intersection& intersection)
 {
     Material& material = intersection.pObject->m_material;
 
@@ -66,7 +64,7 @@ glm::vec3 RayTracer::Lighting(const Intersection& intersection, const Ray& ray)
     glm::vec3 R = glm::normalize(glm::reflect(-L, N));
 
     float diff = glm::max(glm::dot(N, L), 0.0f);
-    float spec = glm::pow(glm::max(glm::dot(-ray.direction, R), 0.0f), material.shininess);
+    float spec = glm::pow(glm::max(glm::dot(intersection.toEye, R), 0.0f), material.shininess);
 
     color += material.diffuse * diff;
     color += material.specular * spec;

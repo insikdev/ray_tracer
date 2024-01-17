@@ -1,10 +1,12 @@
 #pragma once
 
+class Screen;
+class Camera;
 class RayTracer;
 
 class App {
 public:
-    App(uint32_t width, uint32_t height, std::string title);
+    App(uint32_t width, uint32_t height, const std::string& title);
     ~App();
 
 public:
@@ -13,18 +15,9 @@ public:
 private:
     void Render(void);
     void HandleEvent(void);
-    void WritePixel(uint32_t x, uint32_t y, const glm::ivec3& color);
-    glm::vec3 TransformScreenToWorld(const glm::vec2& screenPos);
-    void CaptureImageToBMP(void);
 
 private:
+    Screen* p_screen;
+    Camera* p_camera;
     RayTracer* p_rayTracer;
-
-private:
-    uint32_t m_width;
-    uint32_t m_height;
-    float m_aspect;
-    SDL_Window* m_window;
-    SDL_PixelFormat* m_format;
-    void* m_pixels;
 };

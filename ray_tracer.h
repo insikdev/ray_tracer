@@ -1,7 +1,6 @@
 #pragma once
 
 class BaseObject;
-#include "camera.h"
 
 class RayTracer {
 public:
@@ -9,13 +8,12 @@ public:
     ~RayTracer();
 
 public:
-    glm::ivec3 CastRay(const glm::vec3& worldPos);
+    glm::ivec3 TraceRay(const Ray& ray);
 
 private:
-    glm::vec3 Lighting(const Intersection& intersection, const Ray& ray);
+    glm::vec3 Lighting(const Intersection& intersection);
 
-public:
-    Camera camera;
+public: // world
     std::vector<BaseObject*> m_objects;
     glm::vec3 m_lightPos { 0.0f, 1.0f, -1.0f };
 };
