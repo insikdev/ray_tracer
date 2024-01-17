@@ -3,8 +3,8 @@
 
 int main()
 {
-    const int width = 640;
-    const int height = 480;
+    const int width = 1280;
+    const int height = 720;
 
     App app { width, height, "ray tracing" };
     app.Run();

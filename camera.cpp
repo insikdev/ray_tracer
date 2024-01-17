@@ -5,11 +5,11 @@
 Camera::Camera(const Screen* pScreen)
     : p_screen { pScreen }
 {
-    m_viewportHeight = 2.0f;
-    m_viewportWidth = m_viewportHeight * p_screen->GetAspect();
+    viewportHeight = 2.0f;
+    viewportWidth = viewportHeight * p_screen->GetAspect();
 
-    glm::vec3 viewportX { m_viewportWidth, 0.0f, 0.0f };
-    glm::vec3 viewportY { 0.0f, -m_viewportHeight, 0.0f };
+    glm::vec3 viewportX { viewportWidth, 0.0f, 0.0f };
+    glm::vec3 viewportY { 0.0f, -viewportHeight, 0.0f };
 
     dx = viewportX / static_cast<float>(p_screen->GetWidth());
     dy = viewportY / static_cast<float>(p_screen->GetHeight());

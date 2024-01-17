@@ -12,8 +12,11 @@ public:
 
 private:
     glm::vec3 Lighting(const Intersection& intersection);
+    bool TryFindFirstObject(const Ray& ray, Intersection* out);
+    bool TryFindNearestObject(const Ray& ray, Intersection* out);
+    glm::ivec3 ClampColor(const glm::vec3& color);
 
 public: // world
     std::vector<BaseObject*> m_objects;
-    glm::vec3 m_lightPos { 0.0f, 1.0f, -1.0f };
+    glm::vec3 m_lightPos { -1.0f, 3.0f, -3.0f };
 };

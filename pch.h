@@ -27,6 +27,7 @@ struct Intersection {
     glm::vec3 point;
     glm::vec3 normal;
     glm::vec3 toEye;
+    bool isFront;
     BaseObject* pObject;
 };
 

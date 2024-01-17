@@ -6,19 +6,36 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ray_tracer.cpp" />
-    <ClCompile Include="sphere.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="sphere.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="triangle.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
-    <ClInclude Include="base_object.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ray_tracer.h" />
-    <ClInclude Include="sphere.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="base_object.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle.h">
+      <Filter>object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="object">
+      <UniqueIdentifier>{2f7d2bd5-e647-4901-ad19-801801af0780}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
