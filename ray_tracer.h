@@ -11,8 +11,6 @@ public:
     glm::vec3 TraceRay(const Ray& ray, uint8_t level);
 
 private:
-    glm::vec3 Lighting(const Intersection& intersection);
-    std::optional<Intersection> FindFirstObject(const Ray& ray);
     std::optional<Intersection> FindNearestObject(const Ray& ray);
 
 public: // world

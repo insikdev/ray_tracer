@@ -27,8 +27,6 @@ struct Intersection {
     float distance;
     glm::vec3 point;
     glm::vec3 normal;
-    glm::vec3 toEye;
-    bool isFront;
     BaseObject* pObject;
 };
 
@@ -37,4 +35,5 @@ struct Material {
     glm::vec3 diffuse { 0.9f };
     glm::vec3 specular { 0.9f };
     uint32_t shininess { 16 };
+    float reflectance {};
 };

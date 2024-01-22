@@ -34,8 +34,5 @@ std::optional<Intersection> Triangle::Intersect(const Ray& ray)
         return std::nullopt;
     }
 
-    glm::vec3 toEye = -ray.direction;
-    bool isFront = glm::dot(m_normal, ray.direction) < 0.0f;
-
-    return Intersection { t, point, m_normal, toEye, isFront, this };
+    return Intersection { t, point, m_normal, this };
 }
