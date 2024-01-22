@@ -6,7 +6,7 @@ public:
     virtual ~BaseObject() = default;
 
 public:
-    virtual bool Intersect(const Ray& ray, std::vector<Intersection>& intersections) = 0;
+    virtual std::optional<Intersection> Intersect(const Ray& ray) = 0;
 
 public:
     Material m_material;

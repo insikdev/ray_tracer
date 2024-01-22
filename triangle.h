@@ -8,7 +8,7 @@ public:
     ~Triangle() = default;
 
 public:
-    bool Intersect(const Ray& ray, std::vector<Intersection>& intersections) override;
+    std::optional<Intersection> Intersect(const Ray& ray) override;
 
 private:
     glm::vec3 m_v0;

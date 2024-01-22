@@ -12,8 +12,8 @@ public:
 
 private:
     glm::vec3 Lighting(const Intersection& intersection);
-    bool TryFindFirstObject(const Ray& ray, Intersection* out);
-    bool TryFindNearestObject(const Ray& ray, Intersection* out);
+    std::optional<Intersection> FindFirstObject(const Ray& ray);
+    std::optional<Intersection> FindNearestObject(const Ray& ray);
 
 public: // world
     std::vector<BaseObject*> m_objects;

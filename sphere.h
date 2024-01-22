@@ -8,7 +8,7 @@ public:
     ~Sphere() = default;
 
 public:
-    bool Intersect(const Ray& ray, std::vector<Intersection>& intersections) override;
+    std::optional<Intersection> Intersect(const Ray& ray) override;
 
 public:
     glm::vec3 m_center { 0.0f };

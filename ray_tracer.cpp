@@ -61,24 +61,26 @@ glm::vec3 RayTracer::TraceRay(const Ray& ray, uint8_t level)
         return glm::vec3 { 0.0f };
     }
 
-    Intersection nearest;
+    std::optional<Intersection> nearest = FindNearestObject(ray);
 
-    if (!TryFindNearestObject(ray, &nearest)) {
+    if (!nearest.has_value()) {
         return glm::vec3 { 0.0f };
     }
 
-    Intersection shadow;
-    glm::vec3 shadowDir = glm::normalize(m_lightPos - nearest.point);
-    Ray shadowRay { nearest.point + shadowDir * 1e-4f, shadowDir };
+    glm::vec3 shadowDir = glm::normalize(m_lightPos - nearest->point);
+    Ray shadowRay { nearest->point + shadowDir * 1e-4f, shadowDir };
 
-    if (TryFindFirstObject(shadowRay, &shadow)) {
-        float d = glm::length(m_lightPos - shadow.point);
-        if (shadow.distance < d) {
-            return shadow.pObject->m_material.ambient;
+    std::optional<Intersection> shadow = FindFirstObject(shadowRay);
+
+    if (shadow.has_value()) {
+        float d = glm::length(m_lightPos - shadow->point);
+        if (shadow->distance < d) {
+            return glm::vec3(0.1f);
+            // return shadow.pObject->m_material.ambient;
         }
     }
 
-    glm::vec3 color = Lighting(nearest);
+    glm::vec3 color = Lighting(nearest.value());
     return color;
 }
 
@@ -96,37 +98,34 @@ glm::vec3 RayTracer::Lighting(const Intersection& intersection)
     return material.ambient + material.diffuse * diff + material.specular * spec;
 }
 
-bool RayTracer::TryFindFirstObject(const Ray& ray, Intersection* out)
+std::optional<Intersection> RayTracer::FindFirstObject(const Ray& ray)
 {
-    std::vector<Intersection> interscetions;
-
     for (BaseObject* obj : m_objects) {
-        if (obj->Intersect(ray, interscetions)) {
-            *out = interscetions[0];
-            return true;
+        const auto& intersection = obj->Intersect(ray);
+
+        if (intersection.has_value()) {
+            return intersection.value();
         }
     }
 
-    return false;
+    return std::nullopt;
 }
 
-bool RayTracer::TryFindNearestObject(const Ray& ray, Intersection* out)
+std::optional<Intersection> RayTracer::FindNearestObject(const Ray& ray)
 {
-    std::vector<Intersection> intersections;
+    Intersection nearest { std::numeric_limits<float>::max() };
 
     for (BaseObject* obj : m_objects) {
-        obj->Intersect(ray, intersections);
+        const auto& intersection = obj->Intersect(ray);
+
+        if (intersection.has_value() && intersection->distance < nearest.distance) {
+            nearest = intersection.value();
+        }
     }
 
-    if (intersections.empty()) {
-        return false;
+    if (nearest.distance == std::numeric_limits<float>::max()) {
+        return std::nullopt;
     }
 
-    std::sort(intersections.begin(), intersections.end(), [](const Intersection& a, const Intersection& b) {
-        return a.distance < b.distance;
-    });
-
-    *out = intersections[0];
-
-    return true;
+    return nearest;
 }
