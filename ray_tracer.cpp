@@ -5,25 +5,24 @@
 
 RayTracer::RayTracer()
 {
-    Sphere* obj1 = new Sphere(0.3f);
+    Sphere* obj1 = new Sphere(0.8f);
     obj1->m_center = glm::vec3(0.0f, 0.0f, 2.0f);
     obj1->m_material.diffuse = glm::vec3(0.3f, 0.9f, 0.8f);
-    obj1->m_material.reflectance = 0.3f;
 
-    Sphere* obj2 = new Sphere(0.1f);
-    obj2->m_center = glm::vec3(0.5f, 0.5f, 1.1f);
+    Sphere* obj2 = new Sphere(20.0f);
+    obj2->m_center = glm::vec3(0.5f, 0.5f, 30.0f);
     obj2->m_material.diffuse = glm::vec3(0.8f, 0.3f, 0.6f);
     obj2->m_material.shininess = 64;
 
     Sphere* obj3 = new Sphere(0.5f);
-    obj3->m_center = glm::vec3(-0.7f, -0.5f, 2.0f);
+    obj3->m_center = glm::vec3(-0.2f, -0.5f, 2.0f);
     obj3->m_material.diffuse = glm::vec3(0.1f, 0.1f, 0.6f);
     obj3->m_material.shininess = 256;
 
     Sphere* obj7 = new Sphere(10.0f);
     obj7->m_center = glm::vec3(0.0f, -11.0f, 7.0f);
-    obj7->m_material.diffuse = glm::vec3(0.8f);
-    obj7->m_material.reflectance = 0.7f;
+    obj7->m_material.diffuse = glm::vec3(0.1f, 0.1f, 0.6f);
+    obj7->m_material.reflective = 0.0f;
 
     Triangle* obj4 = new Triangle {
         glm::vec3 { -2.0f, -2.0f, 1.0f },
@@ -49,10 +48,10 @@ RayTracer::RayTracer()
 
     m_objects.push_back(obj1);
     m_objects.push_back(obj2);
-    m_objects.push_back(obj3);
-    // m_objects.push_back(obj4);
-    // m_objects.push_back(obj5);
-    // m_objects.push_back(obj6);
+    // m_objects.push_back(obj3);
+    //  m_objects.push_back(obj4);
+    //  m_objects.push_back(obj5);
+    //  m_objects.push_back(obj6);
     m_objects.push_back(obj7);
     // obj4->m_material.reflectance = 0.5f;
 }
@@ -76,32 +75,34 @@ glm::vec3 RayTracer::TraceRay(const Ray& ray, uint8_t level)
         return glm::vec3 { 0.0f };
     }
 
-    glm::vec3 N { nearest->normal };
-    glm::vec3 L { glm::normalize(m_lightPos - nearest->point) }; // point to light
-    glm::vec3 V { -ray.direction }; // point to eye
-    glm::vec3 R { glm::normalize(glm::reflect(-L, N)) }; // reflect incident light
+    glm::vec3 color { 0.0f };
     const Material& mat { nearest->pObject->m_material };
+
+    const glm::vec3 N { nearest->normal };
+    const glm::vec3 L { glm::normalize(m_lightPos - nearest->point) }; // point to light
 
     Ray shadowRay { nearest->point + L * 1e-4f, L };
     std::optional<Intersection> shadow = FindNearestObject(shadowRay);
 
-    if (shadow.has_value()) {
-        float d = glm::length(m_lightPos - shadow->point);
-        if (shadow->distance < d) {
-            return glm::vec3(0.15f);
-        }
+    if (shadow.has_value() && shadow->distance < glm::length(m_lightPos - shadow->point)) {
+        color += mat.ambient;
+    } else {
+        const glm::vec3 V { -ray.direction }; // point to eye
+        const glm::vec3 R { glm::normalize(glm::reflect(-L, N)) }; // reflect light
+
+        float diff = glm::max(glm::dot(N, L), 0.0f);
+        float spec = static_cast<float>(glm::pow(glm::max(glm::dot(V, R), 0.0f), mat.shininess));
+
+        color += (mat.ambient + mat.diffuse * diff + mat.specular * spec) * (1.0f - mat.reflective - mat.transparency);
     }
 
-    glm::vec3 color { 0.0f };
-
-    float diff = glm::max(glm::dot(N, L), 0.0f);
-    float spec = static_cast<float>(glm::pow(glm::max(glm::dot(V, R), 0.0f), mat.shininess));
-    color += (mat.ambient + mat.diffuse * diff + mat.specular * spec) * (1.0f - mat.reflectance);
-
-    if (mat.reflectance) {
+    if (mat.reflective) {
         glm::vec3 reflectDir = glm::normalize(glm::reflect(ray.direction, N)); // reflect ray
         Ray reflectRay { nearest->point + reflectDir * 1e-4f, reflectDir };
-        color += TraceRay(reflectRay, level - 1) * mat.reflectance;
+        color += TraceRay(reflectRay, level - 1) * mat.reflective;
+    }
+
+    if (mat.transparency) {
     }
 
     return color;

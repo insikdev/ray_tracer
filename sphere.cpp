@@ -33,9 +33,5 @@ std::optional<Intersection> Sphere::Intersect(const Ray& ray)
     glm::vec3 point { ray.origin + ray.direction * t };
     glm::vec3 normal { (point - m_center) / m_radius };
 
-    if (glm::dot(-ray.direction, normal) < 0.0f) {
-        normal = -normal;
-    }
-
     return Intersection { t, point, normal, this };
 }

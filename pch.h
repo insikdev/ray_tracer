@@ -35,5 +35,6 @@ struct Material {
     glm::vec3 diffuse { 0.9f };
     glm::vec3 specular { 0.9f };
     uint32_t shininess { 16 };
-    float reflectance {};
+    float reflective {};
+    float transparency {};
 };
