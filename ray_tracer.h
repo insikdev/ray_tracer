@@ -15,5 +15,5 @@ private:
 
 public: // world
     std::vector<BaseObject*> m_objects;
-    glm::vec3 m_lightPos { -1.0f, 3.0f, -3.0f };
+    std::vector<Light> m_lights { { glm::vec3 { 3.0f, 3.0f, -3.0f } } };
 };

@@ -26,7 +26,7 @@ struct Ray {
 struct Intersection {
     float distance;
     glm::vec3 point;
-    glm::vec3 normal;
+    glm::vec3 N; // normal
     BaseObject* pObject;
 };
 
@@ -37,4 +37,8 @@ struct Material {
     uint32_t shininess { 16 };
     float reflective {};
     float transparency {};
+};
+
+struct Light {
+    glm::vec3 position;
 };

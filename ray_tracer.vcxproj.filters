@@ -13,6 +13,9 @@
     <ClCompile Include="triangle.cpp">
       <Filter>object</Filter>
     </ClCompile>
+    <ClCompile Include="plane.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -27,6 +30,9 @@
       <Filter>object</Filter>
     </ClInclude>
     <ClInclude Include="triangle.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
       <Filter>object</Filter>
     </ClInclude>
   </ItemGroup>
