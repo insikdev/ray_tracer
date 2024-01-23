@@ -12,6 +12,10 @@ public:
 
 private:
     std::optional<Intersection> FindNearestObject(const Ray& ray);
+    glm::vec3 Lighting(const Ray& ray, const Intersection& intersection);
+    glm::vec3 TraceReflect(const Ray& ray, const Intersection& intersection, uint8_t level);
+    glm::vec3 TraceRefract(const Ray& ray, const Intersection& intersection, uint8_t level);
+    float schlick(const Ray& ray, const Intersection& intersection);
 
 public: // world
     std::vector<BaseObject*> m_objects;
