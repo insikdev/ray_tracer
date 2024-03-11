@@ -9,7 +9,7 @@ RayTracer::RayTracer()
     Sphere* obj1 = new Sphere(1.0f);
     obj1->m_center = glm::vec3(0.0f, 1.0f, 3.0f);
     obj1->m_material.diffuse = glm::vec3(0.3f, 0.9f, 0.8f);
-    obj1->m_material.transparency = 0.9f;
+    obj1->m_material.transparency = 0.1f;
     obj1->m_material.reflective = 0.1f;
 
     Sphere* obj2 = new Sphere(0.8f);
